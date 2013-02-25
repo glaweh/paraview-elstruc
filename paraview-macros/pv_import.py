@@ -82,13 +82,13 @@ density_group.Input=density_trans
 Hide(density_group)
 
 SetActiveSource(density_group)
-LCalc = Calculator(density_group,registrationName="Localization Calculator",
-        ResultArrayName = "Localization", Function = calc_function)
-LCalc.UpdatePipeline()
-LCalc.UpdatePipelineInformation()
-dp=GetDisplayProperties(LCalc)
+DCalc = Calculator(density_group,registrationName="Density Calculator",
+        ResultArrayName = "CalcDensity", Function = calc_function)
+DCalc.UpdatePipeline()
+DCalc.UpdatePipelineInformation()
+dp=GetDisplayProperties(DCalc)
 dp.Representation='Outline'
-Hide(LCalc)
+Hide(DCalc)
 
 heatmap = [
    0.00000000000000000, 0.0, 0.0, 0.0,
@@ -96,7 +96,7 @@ heatmap = [
    0.39999999999999997, 0.9019607843137255, 0.9019607843137255, 0.0,
    0.50000000000000000, 1.0, 1.0, 1.0]
 
-calcrange = LCalc.GetDataInformation().DataInformation.GetPointDataInformation().GetArrayInformation('CalcDensity').GetComponentRange(0)
+calcrange = DCalc.GetDataInformation().DataInformation.GetPointDataInformation().GetArrayInformation('CalcDensity').GetComponentRange(0)
 
 scale = (calcrange[1]-calcrange[0])/(heatmap[12]-heatmap[0])
 heatmap[0]  = calcrange[0]
@@ -105,7 +105,7 @@ heatmap[4]  = calcrange[0]+heatmap[4]*scale
 heatmap[8]  = calcrange[0]+heatmap[8]*scale
 
 # loop over slices
-lt = GetLookupTableForArray( "Localization", 1, Discretize=1,
+lt = GetLookupTableForArray( "CalcDensity", 1, Discretize=1,
         RGBPoints=heatmap,
         UseLogScale=0, VectorComponent=0, NanColor=[0.0, 0.4980392156862745, 1.0],
         NumberOfTableValues=256, ColorSpace='RGB',
@@ -113,16 +113,16 @@ lt = GetLookupTableForArray( "Localization", 1, Discretize=1,
         HSVWrap=0, ScalarRangeInitialized=1.0,
         LockScalarRange=1 )
 
-SetActiveSource(LCalc)
-s1 = Slice(LCalc,registrationName="Slice1")
+SetActiveSource(DCalc)
+s1 = Slice(DCalc,registrationName="Slice1")
 s1.SliceType.Normal=[1.0,0,0]
 dp=GetDisplayProperties(s1)
 dp.LookupTable = lt
 dp.ColorAttributeType = 'POINT_DATA'
-dp.ColorArrayName = 'Localization'
+dp.ColorArrayName = 'CalcDensity'
 Show(s1)
 
-SetActiveSource(LCalc)
+SetActiveSource(DCalc)
 s2 = Slice(registrationName="Slice2")
 s2.UpdatePipeline()
 s2.SliceType.Normal=[0,1.0,0]
@@ -130,17 +130,17 @@ s2.SliceType.Origin=[0.214890843075848,3.13861703522885,0.0350842611973924]
 dp=GetDisplayProperties(s2)
 dp.LookupTable = lt
 dp.ColorAttributeType = 'POINT_DATA'
-dp.ColorArrayName = 'Localization'
+dp.ColorArrayName = 'CalcDensity'
 Show(s2)
 
-SetActiveSource(LCalc)
-s3 = Slice(LCalc,registrationName="Slice3")
+SetActiveSource(DCalc)
+s3 = Slice(DCalc,registrationName="Slice3")
 s3.SliceType.Normal=[0,0,1.0]
 s3.SliceType.Origin=[0,0,3.45009528519176]
 dp=GetDisplayProperties(s3)
 dp.LookupTable = lt
 dp.ColorAttributeType = 'POINT_DATA'
-dp.ColorArrayName = 'Localization'
+dp.ColorArrayName = 'CalcDensity'
 Show(s3)
 
 SetActiveSource(None)
