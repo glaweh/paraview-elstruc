@@ -70,10 +70,10 @@ lt = GetLookupTableForArray( "Localization", 1, Discretize=1,
             0.0024, 0.9019607843137255, 0.9019607843137255, 0.0,
             0.0030, 1.0, 1.0, 1.0],
         UseLogScale=0, VectorComponent=0, NanColor=[0.0, 0.4980392156862745, 1.0],
-        NumberOfTableValues=256, EnableOpacityMapping=0, ColorSpace='RGB',
-        IndexedLookup=0, VectorMode='Component', ScalarOpacityFunction=[],
-        HSVWrap=0, ScalarRangeInitialized=1.0, AllowDuplicateScalars=1,
-        Annotations=[], LockScalarRange=1 )
+        NumberOfTableValues=256, ColorSpace='RGB',
+        VectorMode='Component',
+        HSVWrap=0, ScalarRangeInitialized=1.0,
+        LockScalarRange=1 )
 
 SetActiveSource(LCalc)
 s1 = Slice(LCalc,registrationName="Slice1")
