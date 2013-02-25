@@ -57,6 +57,25 @@ GetDisplayProperties(t).Representation='Outline'
 Hide(t)
 density_trans=[t]
 
+densities=density_vtk.GetDataInformation().DataInformation.GetPointDataInformation()
+dos_offset = -42.0
+calc_function = 'd_vol'
+offset_pattern = re.compile('^([+-]\d+\.\d+)_dos$')
+for i in range(0,densities.GetNumberOfArrays()):
+    this_dos_name   = densities.GetArrayInformation(i).GetName()
+    m = offset_pattern.match(this_dos_name)
+    if (m == None):
+        continue
+    this_dos_offset = float(m.group(1))
+    dao = abs(this_dos_offset) - abs(dos_offset)
+    if (dao > 0.001):
+        continue
+    elif (dao > -0.001):
+        if (this_dos_offset > 0):
+            continue
+    dos_offset = this_dos_offset
+    calc_function = this_dos_name + '/d_vol'
+
 density_group=GroupDatasets(registrationName="Densities")
 GetDisplayProperties(density_group).Representation='Outline'
 density_group.Input=density_trans
@@ -64,7 +83,7 @@ Hide(density_group)
 
 SetActiveSource(density_group)
 LCalc = Calculator(density_group,registrationName="Localization Calculator",
-        ResultArrayName = "Localization", Function = "+0.01_dos")
+        ResultArrayName = "Localization", Function = calc_function)
 LCalc.UpdatePipeline()
 LCalc.UpdatePipelineInformation()
 dp=GetDisplayProperties(LCalc)
