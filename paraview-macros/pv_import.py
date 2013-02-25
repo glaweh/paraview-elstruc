@@ -1,11 +1,20 @@
-at_vtk = LegacyVTKReader(FileNames='MgB2-atoms.vtk',registrationName="Input Atoms")
+sourcedict = GetSources()
+if (len(sourcedict) != 1):
+    raise RuntimeError('Only the density file should be loaded')
+density_vtk = sourcedict.values()[0]
+SetActiveSource(density_vtk)
+RenameSource("Input Densities")
+
+import re
+(filebase, filebase_rel) = \
+    re.compile("^(.*/([^/]+))-[^/-]+\.vtk$").match(density_vtk.FileNames[0]).groups()
+at_vtk = LegacyVTKReader(FileNames= filebase + '-atoms.vtk',registrationName="Input Atoms")
 at_vtk.UpdatePipeline()
 at_vtk.UpdatePipelineInformation()
-loc_vtk = LegacyVTKReader(FileNames='MgB2-localization.vtk',registrationName="Input Densities") 
-loc_vtk.UpdatePipeline()
-loc_vtk.UpdatePipelineInformation()
-GetDisplayProperties(loc_vtk).Representation='Outline'
-Hide(loc_vtk)
+density_vtk.UpdatePipeline()
+density_vtk.UpdatePipelineInformation()
+GetDisplayProperties(density_vtk).Representation='Outline'
+Hide(density_vtk)
 
 t=Transform(at_vtk)
 GetDisplayProperties(t).Representation='Outline'
@@ -43,7 +52,7 @@ dp.ColorAttributeType = 'POINT_DATA'
 dp.ColorArrayName = 'Nuclear_charge'
 Show(Nuclei)
 
-t=Transform(loc_vtk)
+t=Transform(density_vtk)
 GetDisplayProperties(t).Representation='Outline'
 Hide(t)
 density_trans=[t]

@@ -1,6 +1,6 @@
 super_dim = [ 3, 3, 2]
 
-density_info   = loc_vtk.GetClientSideObject().GetOutput()
+density_info   = density_vtk.GetClientSideObject().GetOutput()
 density_extent = density_info.GetExtent()
 at = [ [42,42,42],[42,42,42],[42,42,42] ]
 density_info.GetPoint(density_extent[1],0,0,at[0],1)
@@ -21,8 +21,8 @@ for i in range(0,super_dim[0]):
             delta = [ 0.0,0.0,0.0 ]
             for ii in range(0,3):
                 delta[ii] = i*at[0][ii] + j*at[1][ii] + k * at[2][ii]
-            SetActiveSource(loc_vtk)
-            t=Transform(loc_vtk,registrationName="tDen %d, %d, %d" % (i,j,k) )
+            SetActiveSource(density_vtk)
+            t=Transform(density_vtk,registrationName="tDen %d, %d, %d" % (i,j,k) )
             t.Transform.Translate=delta
             GetDisplayProperties(t).Representation='Outline'
             Hide(t)
