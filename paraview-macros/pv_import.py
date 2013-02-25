@@ -90,13 +90,23 @@ dp=GetDisplayProperties(LCalc)
 dp.Representation='Outline'
 Hide(LCalc)
 
+heatmap = [
+   0.00000000000000000, 0.0, 0.0, 0.0,
+   0.19999999999999999, 0.9019607843137255, 0.0, 0.0,
+   0.39999999999999997, 0.9019607843137255, 0.9019607843137255, 0.0,
+   0.50000000000000000, 1.0, 1.0, 1.0]
+
+calcrange = LCalc.GetDataInformation().DataInformation.GetPointDataInformation().GetArrayInformation('CalcDensity').GetComponentRange(0)
+
+scale = (calcrange[1]-calcrange[0])/(heatmap[12]-heatmap[0])
+heatmap[0]  = calcrange[0]
+heatmap[12] = calcrange[1]
+heatmap[4]  = calcrange[0]+heatmap[4]*scale
+heatmap[8]  = calcrange[0]+heatmap[8]*scale
+
 # loop over slices
 lt = GetLookupTableForArray( "Localization", 1, Discretize=1,
-        RGBPoints=[
-            0.0000, 0.0, 0.0, 0.0,
-            0.0012, 0.9019607843137255, 0.0, 0.0,
-            0.0024, 0.9019607843137255, 0.9019607843137255, 0.0,
-            0.0030, 1.0, 1.0, 1.0],
+        RGBPoints=heatmap,
         UseLogScale=0, VectorComponent=0, NanColor=[0.0, 0.4980392156862745, 1.0],
         NumberOfTableValues=256, ColorSpace='RGB',
         VectorMode='Component',
