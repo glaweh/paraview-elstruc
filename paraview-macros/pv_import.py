@@ -60,13 +60,15 @@ density_trans=[t]
 densities=density_vtk.GetDataInformation().DataInformation.GetPointDataInformation()
 dos_offset = -42.0
 calc_function = 'd_vol'
-offset_pattern = re.compile('^([+-]\d+\.\d+)_dos$')
+offset_pattern = re.compile('^([pm])(\d+\.\d+)_dos$')
 for i in range(0,densities.GetNumberOfArrays()):
     this_dos_name   = densities.GetArrayInformation(i).GetName()
     m = offset_pattern.match(this_dos_name)
     if (m == None):
         continue
-    this_dos_offset = float(m.group(1))
+    this_dos_offset = float(m.group(2))
+    if (m.group(1) == 'm'):
+        this_dos_offset = -this_dos_offset
     dao = abs(this_dos_offset) - abs(dos_offset)
     if (dao > 0.001):
         continue
