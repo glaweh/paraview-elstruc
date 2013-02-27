@@ -86,9 +86,8 @@ DCalc = Calculator(density_group,registrationName="Density Calculator",
         ResultArrayName = "CalcDensity", Function = calc_function)
 DCalc.UpdatePipeline()
 DCalc.UpdatePipelineInformation()
-dp=GetDisplayProperties(DCalc)
-dp.Representation='Outline'
-Hide(DCalc)
+GetDisplayProperties(DCalc).Representation='Outline'
+Show(DCalc)
 
 heatmap = [
    0.00000000000000000, 0.0, 0.0, 0.0,
