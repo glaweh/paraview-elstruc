@@ -36,3 +36,5 @@ for i in range(0,super_dim[0]):
 
 density_group.Input=density_trans
 atoms_group.Input=atoms_trans
+SetActiveSource(None)
+Render()
