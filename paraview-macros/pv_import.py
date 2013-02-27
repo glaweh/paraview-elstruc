@@ -112,35 +112,25 @@ lt = GetLookupTableForArray( "CalcDensity", 1, Discretize=1,
         HSVWrap=0, ScalarRangeInitialized=1.0,
         LockScalarRange=1 )
 
-SetActiveSource(DCalc)
-s1 = Slice(DCalc,registrationName="Slice1")
-s1.SliceType.Normal=[1.0,0,0]
-dp=GetDisplayProperties(s1)
-dp.LookupTable = lt
-dp.ColorAttributeType = 'POINT_DATA'
-dp.ColorArrayName = 'CalcDensity'
-Show(s1)
-
-SetActiveSource(DCalc)
-s2 = Slice(registrationName="Slice2")
-s2.UpdatePipeline()
-s2.SliceType.Normal=[0,1.0,0]
-s2.SliceType.Origin=[0.214890843075848,3.13861703522885,0.0350842611973924]
-dp=GetDisplayProperties(s2)
-dp.LookupTable = lt
-dp.ColorAttributeType = 'POINT_DATA'
-dp.ColorArrayName = 'CalcDensity'
-Show(s2)
-
-SetActiveSource(DCalc)
-s3 = Slice(DCalc,registrationName="Slice3")
-s3.SliceType.Normal=[0,0,1.0]
-s3.SliceType.Origin=[0,0,3.45009528519176]
-dp=GetDisplayProperties(s3)
-dp.LookupTable = lt
-dp.ColorAttributeType = 'POINT_DATA'
-dp.ColorArrayName = 'CalcDensity'
-Show(s3)
+import os
+f = open(filebase + '-cutplanes.tsv')
+i = 0
+for line in f:
+    sp = map(float,line.split())
+    SetActiveSource(DCalc)
+    i=i+1
+    s=Slice(DCalc,registrationName="Plane%d" % i)
+    s.SliceType.Normal=[ sp[0],sp[1],sp[2] ]
+    s.SliceType.Origin=[ sp[3],sp[4],sp[5] ]
+    s.UpdatePipeline()
+    s.UpdatePipelineInformation()
+    Hide(s)
+    Render()
+    dp=GetDisplayProperties(s)
+    dp.LookupTable = lt
+    dp.ColorAttributeType = 'POINT_DATA'
+#    dp.ColorArrayName = 'CalcDensity'
+    Show(s)
 
 SetActiveSource(None)
 Render()
