@@ -1,4 +1,4 @@
-super_dim = [ 3, 3, 2]
+super_dim = [ 1, 2, 2]
 
 density_info   = density_vtk.GetClientSideObject().GetOutput()
 density_extent = density_info.GetExtent()
