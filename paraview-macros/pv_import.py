@@ -127,6 +127,22 @@ def SetupDensitySlices(data,field):
         VectorMode='Component',
         HSVWrap=0, ScalarRangeInitialized=1.0,
         LockScalarRange=1 )
+    # Workaround: if theres no overlap between slice and data, PV fails to see
+    # the input field used for coloring
+    #
+    # calculate the center
+    src = FindSource('Input Densities')
+    density_info   = src.GetClientSideObject().GetOutput()
+    density_extent = density_info.GetExtent()
+    at = [ [42,42,42],[42,42,42],[42,42,42] ]
+    density_info.GetPoint(density_extent[1],0,0,at[0],1)
+    density_info.GetPoint(0,density_extent[3],0,at[1],1)
+    density_info.GetPoint(0,0,density_extent[5],at[2],1)
+    center = [
+            (at[0][0]+at[1][0]+at[2][0])/2,
+            (at[0][1]+at[1][1]+at[2][1])/2,
+            (at[0][2]+at[1][2]+at[2][2])/2
+        ]
     # loop over slices
     f = open(filebase + '-cutplanes.tsv')
     i = 0
@@ -136,15 +152,16 @@ def SetupDensitySlices(data,field):
         i=i+1
         s=Slice(data,registrationName="Plane%d" % i)
         s.SliceType.Normal=[ sp[0],sp[1],sp[2] ]
-        s.SliceType.Origin=[ sp[3],sp[4],sp[5] ]
-        s.UpdatePipeline()
+        # Workaround1: shift Slice origin to cell center before assigning
+        # ColorArrayName
+        s.SliceType.Origin=center
         s.UpdatePipelineInformation()
-        Hide(s)
-        Render()
         dp=GetDisplayProperties(s)
         dp.LookupTable = lt
         dp.ColorAttributeType = 'POINT_DATA'
-    #    dp.ColorArrayName = field
+        dp.ColorArrayName = field
+        # Workaround2: shift Slice origin to the desired point
+        s.SliceType.Origin=[ sp[3],sp[4],sp[5] ]
         Show(s)
 
 def DefaultDensity(density_group):
