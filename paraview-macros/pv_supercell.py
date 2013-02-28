@@ -72,6 +72,14 @@ def SetupSupercell():
                 GetDisplayProperties(t).Representation='Outline'
                 Hide(t)
                 atoms_group.Input.append(t)
+    # update stuff due to buggy gui feedback
+    s=GetSources()
+    filter_plane = re.compile("^Plane")
+    for k in s.keys():
+        if (filter_plane.match(k[0])):
+            n=s[k].SliceType.Normal.GetData()
+            s[k].SliceType.Normal=[1,0,0]
+            s[k].SliceType.Normal=n
     SetActiveSource(None)
     Render()
 
