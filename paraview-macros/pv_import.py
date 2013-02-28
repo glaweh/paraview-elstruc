@@ -35,7 +35,7 @@ def SetupAtomPipeline():
     if (at_vtk == None):
         raise RuntimeError('Missing "Input Atoms"')
     SetActiveSource(at_vtk)
-    t=Transform(at_vtk)
+    t=Transform(at_vtk,registrationName="tAtm %d, %d, %d" % (0,0,0))
     GetDisplayProperties(t).Representation='Outline'
     t.UpdatePipeline()
     t.UpdatePipelineInformation()
@@ -83,7 +83,7 @@ def SetupDensityPipeline():
     if (density_vtk == None):
         raise RuntimeError('Missing "Input Densities"')
     SetActiveSource(density_vtk)
-    t=Transform(density_vtk)
+    t=Transform(density_vtk,registrationName="tDen %d, %d, %d" % (0,0,0) )
     GetDisplayProperties(t).Representation='Outline'
     t.UpdatePipeline()
     t.UpdatePipelineInformation()
