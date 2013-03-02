@@ -75,11 +75,14 @@ def SetupSupercell():
     # update stuff due to buggy gui feedback
     s=GetSources()
     filter_plane = re.compile("^Plane")
+    filter_atoms = re.compile("^Covalent Spheres")
     for k in s.keys():
         if (filter_plane.match(k[0])):
             n=s[k].SliceType.Normal.GetData()
             s[k].SliceType.Normal=[1,0,0]
             s[k].SliceType.Normal=n
+        elif (filter_atoms.match(k[0])):
+            s[k].SetScaleFactor=1.0
     SetActiveSource(None)
     Render()
 
