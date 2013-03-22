@@ -162,7 +162,7 @@ def SetupDensitySlices(data,field):
         dp.ColorArrayName = field
         # Workaround2: shift Slice origin to the desired point
         s.SliceType.Origin=[ sp[3],sp[4],sp[5] ]
-        Show(s)
+        Hide(s)
 
 def DefaultDensity(density_group):
     densities=density_group.GetDataInformation().DataInformation.GetPointDataInformation()
