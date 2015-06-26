@@ -96,9 +96,7 @@ def SetupDensityPipeline():
     density_group.UpdatePipelineInformation()
     calc_function=DefaultDensity(density_group)
     if (calc_function == ''):
-        calc_function = 'd_vol'
-    else:
-        calc_function = calc_function + '/d_vol'
+        calc_function = '1'
     SetActiveSource(density_group)
     DCalc = Calculator(density_group,registrationName="Density Calculator",
             ResultArrayName = "CalcDensity", Function = calc_function)
