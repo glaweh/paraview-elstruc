@@ -8,6 +8,11 @@ if (len(GetSources()) != 0):
     raise RuntimeError('Please start with a clean pipeline')
 
 filebase = ''
+paraviewversion = 4.0
+try:
+    paraviewversion=GetParaViewVersion()
+except:
+    paraviewversion = 4.0
 
 def ImportEspressoPP():
     density_filename=str(PyQt4.QtGui.QFileDialog.getOpenFileName(None,
@@ -56,7 +61,11 @@ def SetupAtomPipeline():
     CovalentSpheres=Glyph(atoms_clip,GlyphType='Sphere',registrationName="Covalent Spheres")
     CovalentSpheres.Scalars='Covalent_radius'
     CovalentSpheres.ScaleMode = 'scalar'
-    CovalentSpheres.SetScaleFactor=1
+    if (paraviewversion>=4.2):
+        CovalentSpheres.ScaleFactor=1
+        CovalentSpheres.GlyphMode='All Points'
+    else:
+        CovalentSpheres.SetScaleFactor=1
     CovalentSpheres.GlyphType.PhiResolution=16
     CovalentSpheres.GlyphType.ThetaResolution=16
     CovalentSpheres.GlyphType.Radius=1
@@ -64,18 +73,26 @@ def SetupAtomPipeline():
     dp.LookupTable = GetLookupTableForArray("Nuclear_charge", 1,
             RGBPoints = [1, 0, 0, 1, 100, 1, 0, 0],
             ColorSpace = "HSV")
-    dp.ColorAttributeType = 'POINT_DATA'
-    dp.ColorArrayName = 'Nuclear_charge'
+    if (paraviewversion>=4.2):
+        dp.ColorArrayName = ('POINTS', 'Nuclear_charge')
+    else:
+        dp.ColorAttributeType = 'POINT_DATA'
+        dp.ColorArrayName = 'Nuclear_charge'
     dp.Opacity = 0.4
     Hide(CovalentSpheres)
     SetActiveSource(atoms_clip)
     Nuclei = Glyph(atoms_clip,GlyphType='Sphere',registrationName="Nuclei")
+    if (paraviewversion>=4.2):
+        Nuclei.GlyphMode='All Points'
     dp=GetDisplayProperties(Nuclei)
     dp.LookupTable = GetLookupTableForArray("Nuclear_charge", 1,
             RGBPoints = [1, 0, 0, 1, 100, 1, 0, 0],
             ColorSpace = "HSV")
-    dp.ColorAttributeType = 'POINT_DATA'
-    dp.ColorArrayName = 'Nuclear_charge'
+    if (paraviewversion>=4.2):
+        dp.ColorArrayName = ('POINTS', 'Nuclear_charge')
+    else:
+        dp.ColorAttributeType = 'POINT_DATA'
+        dp.ColorArrayName = 'Nuclear_charge'
     Show(Nuclei)
 
 def SetupDensityPipeline():
@@ -156,8 +173,11 @@ def SetupDensitySlices(data,field):
         s.UpdatePipelineInformation()
         dp=GetDisplayProperties(s)
         dp.LookupTable = lt
-        dp.ColorAttributeType = 'POINT_DATA'
-        dp.ColorArrayName = field
+        if (paraviewversion>=4.2):
+            dp.ColorArrayName = ('POINTS', field)
+        else:
+            dp.ColorAttributeType = 'POINT_DATA'
+            dp.ColorArrayName = field
         # Workaround2: shift Slice origin to the desired point
         s.SliceType.Origin=[ sp[3],sp[4],sp[5] ]
         Hide(s)

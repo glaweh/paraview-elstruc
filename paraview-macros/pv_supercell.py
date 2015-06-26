@@ -2,6 +2,12 @@ from paraview.simple import *
 import PyQt4.QtGui
 import re
 
+paraviewversion = 4.0
+try:
+    paraviewversion=GetParaViewVersion()
+except:
+    paraviewversion = 4.0
+
 def SetupSupercell():
     super_dim   = [ 2, 2, 2]
     density_vtk = FindSource("Input Densities")
@@ -82,7 +88,10 @@ def SetupSupercell():
             s[k].SliceType.Normal=[1,0,0]
             s[k].SliceType.Normal=n
         elif (filter_atoms.match(k[0])):
-            s[k].SetScaleFactor=1.0
+            if (paraviewversion>=4.2):
+                s[k].ScaleFactor=1.0
+            else:
+                s[k].SetScaleFactor=1.0
     SetActiveSource(None)
     Render()
 
