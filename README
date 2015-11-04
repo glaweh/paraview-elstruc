@@ -1,0 +1,104 @@
+Paraview macros for interfacing with electronic structure codes
+===============================================================
+Paraview is a powerful tool for graphical representation and data analysis.
+These macros simplify common visualization tasks in the context of 
+electronic structure codes, such as data import and the setup of an initial
+visualization pipeline, which simplifies common data analysis and
+visualization tasks.
+
+The present macros are intended for direct-space representation of gridded
+data, such as electron densities; support for the representation of
+atoms by spheres is provided as well.
+
+pv_import
+---------
+Performs the actual import and initial pipeline setup:
+1.
+  a) setup of direct-space grid and lattice vectors
+  b) import of data on grids
+2. import of atomic positions and properties (i.e. nuclear charge/covalent radii)
+3. setup atom pipeline:
+  a) placeholder for supercell setup (see: pv_supercell)
+  b) box clip filter (so you can easily remove some atoms
+     from the visualization)
+  c) atomic spheres (glyph, uses Z for color by default)
+4. setup density pipeline
+  a) placeholder for supercell setup (see: pv_supercell)
+  b) Calculator filter: process data and select the _same_ array for
+     all cutplanes (c).
+  c) setup a set of cutplanes, all displaying the output of the Calculator filter
+     (b), so to simultanously change the quantity displayed on all planes one just
+     needs to modify the calculator formula (b).
+     Cutplanes are defined by input files (see INPUT), in my QuantumEspresso output
+     module, I define one plane perpendicular to each symmetry axis, and passing
+     through at least one atom
+
+pv_supercell
+------------
+As rather obvious from the name, it expands the INPUT data (both densities and
+atoms) to regular supercells. 3 Dialogs pop up, asking the user to specify
+X/Y/Z unit cell multipliers.
+Fills 3a) and 4a) with "transform" filters to generate the replicas.
+
+Prerequisits
+============
+- Paraview (latest working/tested version is 4.3.1, some work needs to be done
+  to adapt these macros to 4.4.0)
+- PyQt4 in your Paraview's python: I recommend installing paraview+pyqt via your
+  package manager (apt-get install paraview python-qt4). You can also try the "Bad
+  Hack" at the end of this README in order to integrate pyqt into paraview 
+  binary distributions
+
+Input files
+===========
+pv_input takes its input from three files:
+- prefix-data.vtk
+- prefix-atoms.vtk
+- prefix-cutplanes.tsv
+In the pv_input's file-open dialog, select your prefix-data.vtk, the other two filenames are
+derived implicitly from this filename.
+
+  Coordinates
+  -----------
+  For all files, we assume coordinates to be carthesian within the primitive unit cell,
+  corresponding to crystal coordinates [0:1).
+
+  prefix-data.vtk
+  ---------------
+  Contains densities, or other data subject to the analysis within Paraview.
+  I suggest to use "VTK Structured Grid", where the coordinates of each direct space grid
+  point are explicitely given but nontheless systematic. This eases handling of grids with
+  nonorthoganal lattice vectors, as well as anisotropic sampling.
+
+  prefix-atoms.vtk
+  ----------------
+  Grid points are atomic positions ('VTK unstructured grid'), data on grid are
+  atomic properties, such as nuclear charge Z or atomic radii.
+
+  prefix-cutplanes.tsv
+  --------------------
+  Suggested cut planes to display the densities upon.
+  Each plane is defined by one line (normal+point form), the first three values
+  specifying the plane normal vector (conventionally a symmetry-axis vector) and the final
+  three values specifying the base of the plane (conventionally an atomic position).
+
+
+Bad Hack for installing PyQT4 into Paraview upstream builds
+===========================================================
+Assumption: upstream Paraview is installed in /opt/ParaView-4.3.1-Linux-64bit. Warning:
+this is a HACK. (PV does not distribute QT headers,
+
+1. Download and install SIP
+---------------------------
+  /opt/ParaView-4.3.1-Linux-64bit/bin/pvpython configure.py
+  make
+  sudo make install
+
+2. Build PyQT4
+--------------
+Install your distribution's qt4 development packages (apt-get install libqt4-dev)
+  /opt/ParaView-4.3.1-Linux-64bit/bin//pvpython configure-ng.py --sip=/opt/ParaView-4.3.1-Linux-64bit/lib/paraview-4.3/bin/sip
+  make
+  sudo make install
+
+
