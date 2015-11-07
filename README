@@ -19,6 +19,11 @@ Prerequisits
   Hack" at the end of this README in order to integrate pyqt into paraview 
   binary distributions
 
+Installing
+==========
+Use 'Macros/Add new macro' within Paraview to add pv_import.py and pv_supercell.py
+to your Paraview.
+
 The actual macros
 =================
 pv_import
