@@ -10,6 +10,17 @@ The present macros are intended for direct-space representation of gridded
 data, such as electron densities; support for the representation of
 atoms by spheres is provided as well.
 
+Prerequisits
+============
+- Paraview (latest working/tested version is 4.3.1, some work needs to be done
+  to adapt these macros to 4.4.0)
+- PyQt4 in your Paraview's python: I recommend installing paraview+pyqt via your
+  package manager (apt-get install paraview python-qt4). You can also try the "Bad
+  Hack" at the end of this README in order to integrate pyqt into paraview 
+  binary distributions
+
+The actual macros
+=================
 pv_import
 ---------
 Performs the actual import and initial pipeline setup:
@@ -40,15 +51,6 @@ atoms) to regular supercells. 3 Dialogs pop up, asking the user to specify
 X/Y/Z unit cell multipliers.
 Fills 3a) and 4a) with "transform" filters to generate the replicas.
 
-Prerequisits
-============
-- Paraview (latest working/tested version is 4.3.1, some work needs to be done
-  to adapt these macros to 4.4.0)
-- PyQt4 in your Paraview's python: I recommend installing paraview+pyqt via your
-  package manager (apt-get install paraview python-qt4). You can also try the "Bad
-  Hack" at the end of this README in order to integrate pyqt into paraview 
-  binary distributions
-
 Input files
 ===========
 pv_input takes its input from three files:
@@ -60,15 +62,15 @@ derived implicitly from this filename.
 
   Coordinates
   -----------
-  For all files, we assume coordinates to be carthesian within the primitive unit cell,
+  For all files, we assume coordinates to be cartesian within the primitive unit cell,
   corresponding to crystal coordinates [0:1).
 
   prefix-data.vtk
   ---------------
   Contains densities, or other data subject to the analysis within Paraview.
-  I suggest to use "VTK Structured Grid", where the coordinates of each direct space grid
-  point are explicitely given but nontheless systematic. This eases handling of grids with
-  nonorthoganal lattice vectors, as well as anisotropic sampling.
+  I use "VTK Structured Grid", where the coordinates of each direct space grid
+  point are explicitly given. This eases handling of grids with
+  non-orthogonal lattice vectors, as well as anisotropic sampling.
 
   prefix-atoms.vtk
   ----------------
@@ -78,10 +80,9 @@ derived implicitly from this filename.
   prefix-cutplanes.tsv
   --------------------
   Suggested cut planes to display the densities upon.
-  Each plane is defined by one line (normal+point form), the first three values
+  One line per plane (6 columns, normal+point form), the first three values
   specifying the plane normal vector (conventionally a symmetry-axis vector) and the final
-  three values specifying the base of the plane (conventionally an atomic position).
-
+  three values specifying one point of the plane (I suggest an atomic position).
 
 Bad Hack for installing PyQT4 into Paraview upstream builds
 ===========================================================
