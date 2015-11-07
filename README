@@ -6,9 +6,8 @@ electronic structure codes, such as data import and the setup of an initial
 visualization pipeline, which simplifies common data analysis and
 visualization tasks.
 
-The present macros are intended for direct-space representation of gridded
-data, such as electron densities; support for the representation of
-atoms by spheres is provided as well.
+The present macros are intended for data on direct-space grids, such as
+electron densities, alongside a sphere-representation of atoms.
 
 Prerequisits
 ============
@@ -24,20 +23,26 @@ Installing
 Use 'Macros/Add new macro' within Paraview to add pv_import.py and pv_supercell.py
 to your Paraview.
 
-The actual macros
-=================
+Description of the macros
+=========================
 pv_import
 ---------
-Performs the actual import and initial pipeline setup:
+Performs the actual import and initial pipeline setup; required file formats are described in
+section "Input files". When executing the macro, a file-selection dialog pops up, where you select
+your 'prefix-data.vtk'; the other input filenames are implied from this selection.
 1.
-  a) setup of direct-space grid and lattice vectors
-  b) import of data on grids
-2. import of atomic positions and properties (i.e. nuclear charge/covalent radii)
+   a) setup of direct-space grid and lattice vectors from '${prefix}-data.vtk'
+   b) import of data on grids from '${prefix}-data.vtk'
+2. import of atomic positions and properties (Nuclear_charge/Covalent_radius)
+   from '${prefix}-atoms.vtk
 3. setup atom pipeline:
   a) placeholder for supercell setup (see: pv_supercell)
   b) box clip filter (so you can easily remove some atoms
      from the visualization)
-  c) atomic spheres (glyph, uses Z for color by default)
+  c) Paraview 'Glyph' Spheres representation:
+     i) semi-transparent covalent-radius, colored by Nuclear_charge,
+        invisible by default
+    ii) opaque unit-radius, colored by Nuclear_charge
 4. setup density pipeline
   a) placeholder for supercell setup (see: pv_supercell)
   b) Calculator filter: process data and select the _same_ array for
@@ -45,29 +50,31 @@ Performs the actual import and initial pipeline setup:
   c) setup a set of cutplanes, all displaying the output of the Calculator filter
      (b), so to simultanously change the quantity displayed on all planes one just
      needs to modify the calculator formula (b).
-     Cutplanes are defined by input files (see INPUT), in my QuantumEspresso output
-     module, I define one plane perpendicular to each symmetry axis, and passing
-     through at least one atom
+     Cutplanes are defined by input files (see 'Input files'), in my QuantumEspresso
+     output module, I define one plane perpendicular to each symmetry axis, and passing
+     through at least one atom.
+  You can attach custom visualizations, such as isosurfaces, threshold filters or volume
+  renderers, to the 'Density Calculator' (4b).
 
 pv_supercell
 ------------
-As rather obvious from the name, it expands the INPUT data (both densities and
-atoms) to regular supercells. 3 Dialogs pop up, asking the user to specify
+As rather obvious from the name, it expands both densities and
+atoms to regular supercells. 3 Dialogs pop up, asking the user to specify
 X/Y/Z unit cell multipliers.
 Fills 3a) and 4a) with "transform" filters to generate the replicas.
 
-Input files
-===========
+Input file formats
+==================
 pv_input takes its input from three files:
-- prefix-data.vtk
-- prefix-atoms.vtk
-- prefix-cutplanes.tsv
-In the pv_input's file-open dialog, select your prefix-data.vtk, the other two filenames are
-derived implicitly from this filename.
+- ${prefix}-data.vtk
+- ${prefix}-atoms.vtk
+- ${prefix}-cutplanes.tsv
+In the pv_input's file-open dialog, select your ${prefix}-data.vtk, the other two filenames are
+implied by this filename.
 
   Coordinates
   -----------
-  For all files, we assume coordinates to be cartesian within the primitive unit cell,
+  For all files, we assume cartesian coordinates within the primitive unit cell,
   corresponding to crystal coordinates [0:1).
 
   prefix-data.vtk
@@ -106,5 +113,3 @@ Install your distribution's qt4 development packages (apt-get install libqt4-dev
   /opt/ParaView-4.3.1-Linux-64bit/bin//pvpython configure-ng.py --sip=/opt/ParaView-4.3.1-Linux-64bit/lib/paraview-4.3/bin/sip
   make
   sudo make install
-
-
