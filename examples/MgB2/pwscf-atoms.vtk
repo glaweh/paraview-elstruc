@@ -1,0 +1,30 @@
+# vtk DataFile Version 3.0
+Atom coordinates
+ASCII
+DATASET UNSTRUCTURED_GRID
+POINTS           3 double
+  0.000000000000000E+000  0.000000000000000E+000  0.000000000000000E+000
+ -0.286561720010221E-009  0.330892945013050E+001  0.329898940021558E+001
+  0.286561696328656E+001  0.165446472481708E+001  0.329898940021558E+001
+CELLS           3          6
+          1
+          0
+          1
+          1
+          1
+          2
+CELL_TYPES           3
+          1
+          1
+          1
+POINT_DATA           3
+SCALARS Nuclear_charge int 1
+LOOKUP_TABLE default
+         12
+          5
+          5
+SCALARS Covalent_radius double 1
+LOOKUP_TABLE default
+  0.283458919932846E+001
+  0.160626721295280E+001
+  0.160626721295280E+001
