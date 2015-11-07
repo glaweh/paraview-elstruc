@@ -11,8 +11,7 @@ electron densities, alongside a sphere-representation of atoms.
 
 Prerequisits
 ============
-- Paraview (latest working/tested version is 4.3.1, some work needs to be done
-  to adapt these macros to 4.4.0)
+- Paraview (macros were developed for, and tested in version 3.14.1)
 - PyQt4 in your Paraview's python: I recommend installing paraview+pyqt via your
   package manager (apt-get install paraview python-qt4). You can also try the "Bad
   Hack" at the end of this README in order to integrate pyqt into paraview 
