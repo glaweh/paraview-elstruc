@@ -14,7 +14,7 @@ try:
 except:
     paraviewversion = 4.0
 
-def ImportEspressoPP():
+def ImportElstruc():
     density_filename=str(PyQt4.QtGui.QFileDialog.getOpenFileName(None,
             "Select density file",
             '',
@@ -205,7 +205,7 @@ def DefaultDensity(density_group):
         result = this_dos_name
     return result
 
-ImportEspressoPP()
+ImportElstruc()
 SetupAtomPipeline()
 SetupDensityPipeline()
 SetActiveSource(None)
