@@ -111,7 +111,7 @@ def SetupDensityPipeline():
     Hide(density_group)
     density_group.UpdatePipeline()
     density_group.UpdatePipelineInformation()
-    calc_function=DefaultDensity(density_group)
+    calc_function='total_dos'
     if (calc_function == ''):
         calc_function = '1'
     SetActiveSource(density_group)
@@ -181,29 +181,6 @@ def SetupDensitySlices(data,field):
         # Workaround2: shift Slice origin to the desired point
         s.SliceType.Origin=[ sp[3],sp[4],sp[5] ]
         Hide(s)
-
-def DefaultDensity(density_group):
-    densities=density_group.GetDataInformation().DataInformation.GetPointDataInformation()
-    result = ''
-    dos_offset = -42.0
-    offset_pattern = re.compile('^([pm])(\d+\.\d+)_dos$')
-    for i in range(0,densities.GetNumberOfArrays()):
-        this_dos_name   = densities.GetArrayInformation(i).GetName()
-        m = offset_pattern.match(this_dos_name)
-        if (m == None):
-            continue
-        this_dos_offset = float(m.group(2))
-        if (m.group(1) == 'm'):
-            this_dos_offset = -this_dos_offset
-        dao = abs(this_dos_offset) - abs(dos_offset)
-        if (dao > 0.001):
-            continue
-        elif (dao > -0.001):
-            if (this_dos_offset > 0):
-                continue
-        dos_offset = this_dos_offset
-        result = this_dos_name
-    return result
 
 ImportElstruc()
 SetupAtomPipeline()
